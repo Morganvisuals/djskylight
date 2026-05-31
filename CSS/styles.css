@@ -559,9 +559,15 @@ nav.scrolled .logo svg {
   content: "";
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 50%;
   width: 100vw;
+  /* Pin to a STABLE height instead of tracking the hero's bottom. The hero is
+     100dvh (dynamic), so its height — and thus a `cover` background — would
+     rescale ("grow") when the mobile URL bar collapses on scroll. 100lvh is the
+     large/max viewport height and never changes, so the image stays put. */
+  height: 100vh;
+  height: 100lvh;
+  min-height: 100%;
   transform: translateX(-50%);
   z-index: -1;
   background:
