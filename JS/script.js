@@ -355,7 +355,6 @@
     status.className = 'form-status';
     status.setAttribute('role', 'status');
     status.setAttribute('aria-live', 'polite');
-    status.hidden = true;
     form.appendChild(status);
 
     const t = (key) => {
@@ -363,33 +362,22 @@
       return (translations[lang] && translations[lang][key]) || translations.fr[key] || '';
     };
 
-    // Auto-dismiss the status message after a delay, with a smooth fade-out
+    // The card expands/collapses smoothly via the .is-open class (see CSS)
     const AUTO_HIDE_MS = 8000;
     let hideTimer = null;
 
-    const resetStatus = () => {
+    const collapseStatus = () => {
       if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
-      status.hidden = true;
-      status.classList.remove('form-status--out', 'form-status--ok', 'form-status--err');
-    };
-
-    const fadeOutStatus = () => {
-      status.classList.add('form-status--out');
-      const onEnd = (e) => {
-        if (e.propertyName !== 'opacity') return;
-        status.removeEventListener('transitionend', onEnd);
-        resetStatus();
-      };
-      status.addEventListener('transitionend', onEnd);
+      status.classList.remove('is-open');
     };
 
     const showStatus = (key, kind, autoHide = true) => {
-      resetStatus();
+      if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
       status.textContent = t(key);
-      status.classList.add(kind);
-      status.hidden = false;
+      status.classList.remove('form-status--ok', 'form-status--err');
+      status.classList.add(kind, 'is-open');
       // Errors stay until the next submit; only success auto-dismisses
-      if (autoHide) hideTimer = setTimeout(fadeOutStatus, AUTO_HIDE_MS);
+      if (autoHide) hideTimer = setTimeout(collapseStatus, AUTO_HIDE_MS);
     };
 
     form.addEventListener('submit', async (ev) => {
@@ -400,8 +388,8 @@
         return;
       }
 
-      // Sending state
-      resetStatus();
+      // Sending state — collapse any previous message smoothly
+      collapseStatus();
       if (sendBtn) { sendBtn.disabled = true; sendBtn.innerHTML = t('form.sending'); }
 
       try {
