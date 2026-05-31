@@ -544,7 +544,10 @@ nav.scrolled .logo svg {
   position: relative;
   isolation: isolate;
   min-height: 100vh;
-  min-height: 100dvh;
+  /* svh (small viewport height) is STATIC — unlike dvh it does NOT change when
+     the mobile URL bar collapses on scroll, so the hero never resizes and the
+     whole page below it stops shifting/jumping as you scroll. */
+  min-height: 100svh;
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
@@ -559,15 +562,9 @@ nav.scrolled .logo svg {
   content: "";
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 50%;
   width: 100vw;
-  /* Pin to a STABLE height instead of tracking the hero's bottom. The hero is
-     100dvh (dynamic), so its height — and thus a `cover` background — would
-     rescale ("grow") when the mobile URL bar collapses on scroll. 100lvh is the
-     large/max viewport height and never changes, so the image stays put. */
-  height: 100vh;
-  height: 100lvh;
-  min-height: 100%;
   transform: translateX(-50%);
   z-index: -1;
   background:
