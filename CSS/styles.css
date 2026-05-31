@@ -68,9 +68,16 @@ button {
 body::after {
   content: "";
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* lvh = large viewport height (URL bar retracted). Pinning to the MAX height
+     stops the `cover` image from rescaling — i.e. "growing" — when the mobile
+     address bar collapses on scroll. */
+  height: 100lvh;
   z-index: -2;
-  background: url('../Images/new-background.png') center / cover fixed no-repeat;
+  background: url('../Images/new-background.png') center / cover no-repeat;
   opacity: 1;
 }
 
@@ -1602,8 +1609,13 @@ footer a.legal-link:hover {
 /* Small mobile */
 @media (max-width: 480px) {
   .photo-grid {
-    column-count: 1;
+    column-count: 2;
+    column-gap: 10px;
     max-width: 420px;
+  }
+
+  .photo-item {
+    margin-bottom: 10px;
   }
 
   .logo svg {
