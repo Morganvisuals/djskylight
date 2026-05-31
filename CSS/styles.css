@@ -1329,7 +1329,9 @@ form .btn:disabled {
 
 /* ---------- FOOTER ---------- */
 footer {
-  padding: 80px 0 40px;
+  /* Side padding (matches .container's 5vw) so the copyright line never
+     touches the screen edges on mobile. */
+  padding: 80px 5vw 40px;
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, .06);
 }
@@ -1351,6 +1353,7 @@ footer .socials {
 footer p {
   color: var(--muted);
   font-size: .9rem;
+  line-height: 1.7;
 }
 
 footer a.legal-link {
