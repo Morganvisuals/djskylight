@@ -363,6 +363,34 @@
       return (translations[lang] && translations[lang][key]) || translations.fr[key] || '';
     };
 
+    // Auto-dismiss the status message after a delay, with a smooth fade-out
+    const AUTO_HIDE_MS = 8000;
+    let hideTimer = null;
+
+    const resetStatus = () => {
+      if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+      status.hidden = true;
+      status.classList.remove('form-status--out', 'form-status--ok', 'form-status--err');
+    };
+
+    const fadeOutStatus = () => {
+      status.classList.add('form-status--out');
+      const onEnd = (e) => {
+        if (e.propertyName !== 'opacity') return;
+        status.removeEventListener('transitionend', onEnd);
+        resetStatus();
+      };
+      status.addEventListener('transitionend', onEnd);
+    };
+
+    const showStatus = (key, kind) => {
+      resetStatus();
+      status.textContent = t(key);
+      status.classList.add(kind);
+      status.hidden = false;
+      hideTimer = setTimeout(fadeOutStatus, AUTO_HIDE_MS);
+    };
+
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
 
@@ -372,8 +400,7 @@
       }
 
       // Sending state
-      status.hidden = true;
-      status.classList.remove('form-status--ok', 'form-status--err');
+      resetStatus();
       if (sendBtn) { sendBtn.disabled = true; sendBtn.innerHTML = t('form.sending'); }
 
       try {
@@ -385,17 +412,13 @@
 
         if (res.ok) {
           form.reset();
-          status.textContent = t('form.success');
-          status.classList.add('form-status--ok');
+          showStatus('form.success', 'form-status--ok');
         } else {
-          status.textContent = t('form.error');
-          status.classList.add('form-status--err');
+          showStatus('form.error', 'form-status--err');
         }
       } catch (_) {
-        status.textContent = t('form.error');
-        status.classList.add('form-status--err');
+        showStatus('form.error', 'form-status--err');
       } finally {
-        status.hidden = false;
         if (sendBtn) { sendBtn.disabled = false; sendBtn.innerHTML = sendLabel; }
       }
     });
