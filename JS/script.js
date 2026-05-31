@@ -383,12 +383,13 @@
       status.addEventListener('transitionend', onEnd);
     };
 
-    const showStatus = (key, kind) => {
+    const showStatus = (key, kind, autoHide = true) => {
       resetStatus();
       status.textContent = t(key);
       status.classList.add(kind);
       status.hidden = false;
-      hideTimer = setTimeout(fadeOutStatus, AUTO_HIDE_MS);
+      // Errors stay until the next submit; only success auto-dismisses
+      if (autoHide) hideTimer = setTimeout(fadeOutStatus, AUTO_HIDE_MS);
     };
 
     form.addEventListener('submit', async (ev) => {
@@ -414,10 +415,10 @@
           form.reset();
           showStatus('form.success', 'form-status--ok');
         } else {
-          showStatus('form.error', 'form-status--err');
+          showStatus('form.error', 'form-status--err', false);
         }
       } catch (_) {
-        showStatus('form.error', 'form-status--err');
+        showStatus('form.error', 'form-status--err', false);
       } finally {
         if (sendBtn) { sendBtn.disabled = false; sendBtn.innerHTML = sendLabel; }
       }
