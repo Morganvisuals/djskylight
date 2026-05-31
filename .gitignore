@@ -1,0 +1,10 @@
+# Dev only — not deployed
+CLAUDE.md
+project-map.json
+package.json
+package-lock.json
+scripts/
+
+# System
+.DS_Store
+.vscode/
