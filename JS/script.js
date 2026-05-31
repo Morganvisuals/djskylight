@@ -45,6 +45,9 @@
       'form.email': 'Email...',
       'form.message': 'Message...',
       'form.send': 'Envoyer',
+      'form.sending': 'Envoi…',
+      'form.success': 'Merci ! Votre message a bien été envoyé.',
+      'form.error': 'Une erreur est survenue. Réessayez ou écrivez à djskylightfwi@gmail.com.',
       'footer.rights': 'Tous droits réservés',
       'footer.legal': 'Mentions Légales',
       'legal.title': 'Mentions Légales',
@@ -105,6 +108,9 @@
       'form.email': 'Email...',
       'form.message': 'Message...',
       'form.send': 'Send',
+      'form.sending': 'Sending…',
+      'form.success': 'Thank you! Your message has been sent.',
+      'form.error': 'Something went wrong. Please try again or email djskylightfwi@gmail.com.',
       'footer.rights': 'All rights reserved',
       'footer.legal': 'Legal Notices',
       'legal.title': 'Legal Notices',
@@ -338,33 +344,62 @@
     }, { threshold: 0.5 }).observe(musique);
   }
 
-  /* ---------- Contact form → mailto ---------- */
+  /* ---------- Contact form → Formspree (AJAX) ---------- */
   const form = document.getElementById('contact-form');
-  form?.addEventListener('submit', (ev) => {
-    ev.preventDefault();
-    const f = ev.target;
-    const nom = (f.nom?.value || '').trim();
-    const prenom = (f.prenom?.value || '').trim();
-    const email = (f.email?.value || '').trim();
-    const message = (f.message?.value || '').trim();
+  if (form) {
+    const sendBtn = form.querySelector('button[type="submit"]');
+    const sendLabel = sendBtn?.innerHTML;
 
-    if (!nom || !prenom || !email || !message) {
-      // Minimal feedback if validation fails
-      f.reportValidity?.();
-      return;
-    }
+    // Live-region status message shown below the button
+    const status = document.createElement('p');
+    status.className = 'form-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    status.hidden = true;
+    form.appendChild(status);
 
-    const subject = `Booking - ${nom} ${prenom}`;
-    const body =
-      `Nom: ${nom} ${prenom}\r\n` +
-      `Email: ${email}\r\n\r\n` +
-      `${message}`;
+    const t = (key) => {
+      const lang = document.documentElement.lang || 'fr';
+      return (translations[lang] && translations[lang][key]) || translations.fr[key] || '';
+    };
 
-    window.location.href =
-      `mailto:djskylightfwi@gmail.com` +
-      `?subject=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(body)}`;
-  });
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity?.();
+        return;
+      }
+
+      // Sending state
+      status.hidden = true;
+      status.classList.remove('form-status--ok', 'form-status--err');
+      if (sendBtn) { sendBtn.disabled = true; sendBtn.innerHTML = t('form.sending'); }
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' }
+        });
+
+        if (res.ok) {
+          form.reset();
+          status.textContent = t('form.success');
+          status.classList.add('form-status--ok');
+        } else {
+          status.textContent = t('form.error');
+          status.classList.add('form-status--err');
+        }
+      } catch (_) {
+        status.textContent = t('form.error');
+        status.classList.add('form-status--err');
+      } finally {
+        status.hidden = false;
+        if (sendBtn) { sendBtn.disabled = false; sendBtn.innerHTML = sendLabel; }
+      }
+    });
+  }
 
   /* ---------- Magnetic hover — .glass.book card ---------- */
   const bookCard = document.querySelector('.glass.book');

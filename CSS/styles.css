@@ -1282,6 +1282,26 @@ form .btn:hover {
   box-shadow: 0 0 30px rgba(236, 58, 30, .8);
 }
 
+form .btn:disabled {
+  opacity: .6;
+  cursor: progress;
+  box-shadow: none;
+}
+
+.form-status {
+  margin: 0;
+  font-size: .92rem;
+  line-height: 1.5;
+}
+
+.form-status--ok {
+  color: #4ade80;
+}
+
+.form-status--err {
+  color: #ff6b54;
+}
+
 /* ---------- FOOTER ---------- */
 footer {
   padding: 80px 0 40px;
