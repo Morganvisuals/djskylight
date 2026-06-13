@@ -1157,12 +1157,50 @@ body.loaded > *:not(#loader):not(.m-dropdown) {
   color: var(--txt);
   font-size: 1.6rem;
   cursor: pointer;
+  z-index: 3;
   transition: background .25s ease, border-color .25s ease;
 }
 
 .lightbox-close:hover {
   background: var(--red);
   border-color: var(--red);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 50%;
+  color: var(--txt);
+  font-size: 2.2rem;
+  cursor: pointer;
+  z-index: 2;
+  transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+
+.lightbox-nav--prev {
+  left: 28px;
+}
+
+.lightbox-nav--next {
+  right: 28px;
+}
+
+.lightbox-nav:hover {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.lightbox-nav:focus-visible,
+.lightbox-close:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
 }
 
 /* ---------- CONTACT ---------- */
@@ -1610,12 +1648,12 @@ footer a.legal-link:hover {
      landscape shots sit in the middle, while tall portraits fill the area
      without ever reaching the button. */
   .lightbox {
-    padding: 96px 16px 24px;
+    padding: 96px 16px 86px;
     align-items: center;
   }
 
   .lightbox img {
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 182px);
     max-width: 100%;
   }
 
@@ -1624,6 +1662,25 @@ footer a.legal-link:hover {
     right: 18px;
     background: rgba(10, 10, 10, .75);
     border-color: rgba(255, 255, 255, .22);
+  }
+
+  .lightbox-nav {
+    width: 44px;
+    height: 44px;
+    top: auto;
+    bottom: 22px;
+    transform: none;
+    background: rgba(10, 10, 10, .72);
+    border-color: rgba(255, 255, 255, .22);
+    font-size: 1.8rem;
+  }
+
+  .lightbox-nav--prev {
+    left: calc(50% - 58px);
+  }
+
+  .lightbox-nav--next {
+    right: calc(50% - 58px);
   }
 
   .materiel-grid {
