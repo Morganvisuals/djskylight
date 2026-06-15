@@ -1,6 +1,6 @@
 <?php
 /**
- * contact.php — Formulaire de contact morganvisuals.fr
+ * contact.php — Formulaire de contact djskylight.fr
  * Envoie un email + enregistre le message dans MySQL.
  */
 
@@ -16,15 +16,21 @@ function respond(int $code, array $payload) {
 $configPath = '/home/hocp8711/private/djskylight_config.php';
 
 if (!file_exists($configPath)) {
-    error_log('contact.php: fichier config introuvable.');
-    respond(500, ['ok' => false, 'error' => 'Configuration serveur manquante.']);
+    error_log('contact.php: fichier config djskylight introuvable.');
+    respond(500, [
+        'ok' => false,
+        'error' => 'Configuration serveur manquante.'
+    ]);
 }
 
 $config = require $configPath;
 
-// Accepter uniquement POST
+// Accepter uniquement les requêtes POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    respond(405, ['ok' => false, 'error' => 'Méthode non autorisée.']);
+    respond(405, [
+        'ok' => false,
+        'error' => 'Méthode non autorisée.'
+    ]);
 }
 
 // Honeypot anti-spam
@@ -32,17 +38,23 @@ if (!empty($_POST['_gotcha'])) {
     respond(200, ['ok' => true]);
 }
 
-// Récupération des champs
-$name    = trim($_POST['name'] ?? '');
-$email   = trim($_POST['email'] ?? '');
-$subject = trim($_POST['subject'] ?? '');
-$message = trim($_POST['message'] ?? '');
+// Récupération des champs du formulaire
+$prenomInput = trim($_POST['prenom'] ?? '');
+$nomInput    = trim($_POST['nom'] ?? '');
+$name        = trim($_POST['name'] ?? trim($prenomInput . ' ' . $nomInput));
+$email       = trim($_POST['email'] ?? '');
+$subject     = trim($_POST['subject'] ?? '');
+$message     = trim($_POST['message'] ?? '');
 
 // Validation
 $errors = [];
 
-if ($name === '') {
-    $errors[] = 'name';
+if ($prenomInput === '' && $name === '') {
+    $errors[] = 'prenom';
+}
+
+if ($nomInput === '' && $name === '') {
+    $errors[] = 'nom';
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -61,19 +73,18 @@ if ($errors) {
     ]);
 }
 
-// Si le sujet est vide
+// Sujet par défaut
 if ($subject === '') {
-    $subject = 'Nouveau message depuis morganvisuals.fr';
+    $subject = 'Nouveau message depuis djskylight.fr';
 }
 
-// Ta table MySQL demande prenom + nom.
-// Comme ton formulaire utilise "name", on découpe automatiquement.
+// La table MySQL demande prenom + nom.
+// Le formulaire envoie deja ces champs, avec repli si un ancien champ "name" existe.
 $nameParts = preg_split('/\s+/', $name, 2);
 
-$prenom = $nameParts[0] ?? '';
-$nom    = $nameParts[1] ?? 'Non renseigné';
+$prenom = $prenomInput !== '' ? $prenomInput : ($nameParts[0] ?? 'Non renseigné');
+$nom    = $nomInput !== '' ? $nomInput : ($nameParts[1] ?? 'Non renseigné');
 
-// Si jamais le visiteur écrit juste "Morgan", nom devient "Non renseigné"
 if ($prenom === '') {
     $prenom = 'Non renseigné';
 }
@@ -82,7 +93,7 @@ if ($nom === '') {
     $nom = 'Non renseigné';
 }
 
-// Préparer le message stocké en base
+// Message complet stocké en base
 $fullMessage = "Sujet : " . $subject . "\n\n" . $message;
 
 // Infos techniques
@@ -122,7 +133,7 @@ try {
     ]);
 
 } catch (PDOException $e) {
-    error_log('contact.php MySQL: ' . $e->getMessage());
+    error_log('contact.php MySQL djskylight: ' . $e->getMessage());
 
     respond(500, [
         'ok' => false,
@@ -134,8 +145,8 @@ try {
 // 2. ENVOI EMAIL
 // ---------------------------------------------------------------------------
 
-$body  = "Nouveau message depuis le formulaire de contact\n";
-$body .= "------------------------------------------------\n\n";
+$body  = "Nouveau message depuis le formulaire de contact DJ Skylight\n";
+$body .= "----------------------------------------------------------\n\n";
 $body .= "Nom complet : {$name}\n";
 $body .= "Prénom      : {$prenom}\n";
 $body .= "Nom         : {$nom}\n";
@@ -153,12 +164,12 @@ $headers .= "Reply-To: {$safeEmail}\r\n";
 $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
 $headers .= "MIME-Version: 1.0\r\n";
 
-$mailSubject = '[Contact] ' . $safeSubject;
+$mailSubject = '[DJ Skylight - Contact] ' . $safeSubject;
 
 $sent = mail($config['recipient'], $mailSubject, $body, $headers);
 
 if (!$sent) {
-    error_log('contact.php: email non envoyé, mais message enregistré en base.');
+    error_log('contact.php djskylight: email non envoyé, mais message enregistré en base.');
 
     respond(200, [
         'ok' => true,
@@ -166,5 +177,5 @@ if (!$sent) {
     ]);
 }
 
-// Réponse finale pour ton JavaScript
+// Réponse finale pour le JavaScript
 respond(200, ['ok' => true]);
