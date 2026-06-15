@@ -166,7 +166,15 @@ $headers .= "MIME-Version: 1.0\r\n";
 
 $mailSubject = '[DJ Skylight - Contact] ' . $safeSubject;
 
-$sent = mail($config['recipient'], $mailSubject, $body, $headers);
+$additionalParams = '-f ' . $config['from_address'];
+
+$sent = mail(
+    $config['recipient'],
+    $mailSubject,
+    $body,
+    $headers,
+    $additionalParams
+);
 
 if (!$sent) {
     error_log('contact.php djskylight: email non envoyé, mais message enregistré en base.');
