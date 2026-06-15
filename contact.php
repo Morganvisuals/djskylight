@@ -137,8 +137,7 @@ try {
 
     respond(500, [
         'ok' => false,
-        'error' => 'Erreur MySQL',
-        'debug' => $e->getMessage()
+        'error' => 'Erreur lors de l’enregistrement du message.'
     ]);
 }
 
