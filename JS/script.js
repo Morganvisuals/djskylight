@@ -141,10 +141,20 @@
     }
   };
 
-  const setLang = (lang) => {
-    if (!translations[lang]) return;
-    const dict = translations[lang];
-    document.documentElement.lang = lang;
+  const FADE_MS = 260;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reflète la langue dans l'URL : ?lang=en pour l'anglais, URL propre pour le FR par défaut.
+  const syncUrl = (lang) => {
+    try {
+      const url = new URL(window.location.href);
+      if (lang === 'en') url.searchParams.set('lang', 'en');
+      else url.searchParams.delete('lang');
+      history.replaceState(null, '', url);
+    } catch (_) {}
+  };
+
+  const applyText = (dict) => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
       if (dict[key] !== undefined) el.innerHTML = dict[key];
@@ -153,6 +163,14 @@
       const key = el.dataset.i18nPlaceholder;
       if (dict[key] !== undefined) el.placeholder = dict[key];
     });
+  };
+
+  const setLang = (lang, animate) => {
+    if (!translations[lang]) return;
+    const dict = translations[lang];
+
+    // Feedback immédiat : <html lang>, pill FR/EN, stockage et URL.
+    document.documentElement.lang = lang;
     document.querySelectorAll('.lang-switch').forEach(sw => {
       sw.dataset.lang = lang;
       sw.querySelectorAll('.lang-switch__opt').forEach(opt => {
@@ -162,17 +180,65 @@
         lang === 'fr' ? 'Switch language to English' : 'Changer la langue en français');
     });
     try { localStorage.setItem('lang', lang); } catch (_) {}
+    syncUrl(lang);
+
+    // Swap du texte, avec fondu si demandé.
+    if (animate && !prefersReduced) {
+      const switches = document.querySelectorAll('.lang-switch');
+      switches.forEach(sw => sw.classList.add('is-switching'));
+      setTimeout(() => switches.forEach(sw => sw.classList.remove('is-switching')), 600);
+
+      // Armer la transition (lang-anim), forcer un reflow, PUIS déclencher le flou
+      // (lang-out) — sinon le navigateur saute l'état sortant sans l'animer.
+      document.body.classList.add('lang-anim');
+      void document.body.offsetWidth;
+      document.body.classList.add('lang-out');
+      setTimeout(() => {
+        // FLIP : le swap de texte change la largeur des voisins (« Réserver » → « Book »),
+        // ce qui décale le toggle ancré à droite. On mémorise sa position avant le swap,
+        // puis on le fait glisser jusqu'à sa nouvelle place au lieu d'un saut brutal.
+        const sws = Array.from(document.querySelectorAll('.lang-switch'));
+        const before = sws.map(sw => sw.getBoundingClientRect().left);
+
+        applyText(dict);
+
+        sws.forEach((sw, i) => {
+          const dx = before[i] - sw.getBoundingClientRect().left;
+          if (Math.abs(dx) < 0.5) return;
+          sw.style.transition = 'none';
+          sw.style.transform = `translateX(${dx}px)`;
+          void sw.offsetWidth;
+          sw.style.transition = 'transform .45s cubic-bezier(.22, 1, .36, 1)';
+          sw.style.transform = '';
+          setTimeout(() => {
+            sw.style.transition = '';
+            sw.style.transform = '';
+          }, 480);
+        });
+
+        requestAnimationFrame(() => {
+          document.body.classList.remove('lang-out');
+          setTimeout(() => document.body.classList.remove('lang-anim'), FADE_MS);
+        });
+      }, FADE_MS);
+    } else {
+      applyText(dict);
+    }
   };
 
   let savedLang = null;
   try { savedLang = localStorage.getItem('lang'); } catch (_) {}
-  const initial = savedLang
+  let urlLang = null;
+  try { urlLang = new URL(window.location.href).searchParams.get('lang'); } catch (_) {}
+  if (urlLang && !translations[urlLang]) urlLang = null;
+  // Priorité : URL (lien partagé explicite) > préférence stockée > langue navigateur.
+  const initial = urlLang || savedLang
     || ((navigator.language || '').toLowerCase().startsWith('en') ? 'en' : 'fr');
   setLang(initial);
 
   document.querySelectorAll('.lang-switch').forEach(sw => {
     sw.addEventListener('click', () => {
-      setLang(sw.dataset.lang === 'fr' ? 'en' : 'fr');
+      setLang(sw.dataset.lang === 'fr' ? 'en' : 'fr', true);
     });
   });
 

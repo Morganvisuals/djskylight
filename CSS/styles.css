@@ -563,6 +563,26 @@ nav.scrolled .logo svg {
   transform: translateX(100%);
 }
 
+/* Flash de glow sur le pill pendant la bascule (posé en JS via .is-switching).
+   Montée rapide puis fade lent du glow (ease-out) pour une disparition douce. */
+.lang-switch.is-switching .lang-switch__pill {
+  animation: pill-flare .6s ease-out;
+}
+
+@keyframes pill-flare {
+  0%, 100% {
+    box-shadow:
+      0 4px 14px rgba(236, 58, 30, .45),
+      inset 0 1px 0 rgba(255, 255, 255, .14);
+  }
+  22% {
+    box-shadow:
+      0 4px 22px rgba(236, 58, 30, .9),
+      0 0 28px rgba(236, 58, 30, .6),
+      inset 0 1px 0 rgba(255, 255, 255, .22);
+  }
+}
+
 .lang-switch__opt {
   position: relative;
   z-index: 2;
@@ -573,11 +593,24 @@ nav.scrolled .logo svg {
   color: rgba(255, 255, 255, .55);
   text-transform: uppercase;
   line-height: 1;
-  transition: color .35s ease;
+  transition:
+    color .35s ease,
+    transform .42s cubic-bezier(.4, 1.3, .4, 1);
 }
 
 .lang-switch__opt.active {
   color: #fff;
+  transform: scale(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-switch.is-switching .lang-switch__pill {
+    animation: none;
+  }
+
+  .lang-switch__opt.active {
+    transform: none;
+  }
 }
 
 .burger {
@@ -785,6 +818,47 @@ nav.scrolled .logo svg {
 
 .reveal.delay3 {
   transition-delay: .45s;
+}
+
+/* ---------- LANGUAGE SWAP — BLUR FADE ----------
+   État temporaire posé sur <body> pendant un changement de langue.
+   Flou + fondu + léger décalage, dans l'esprit des .reveal.
+   Scopé pour ne pas écraser le timing des .reveal (1s). */
+body.lang-anim [data-i18n],
+body.lang-anim .btn:has([data-i18n]) {
+  transition: opacity .26s ease, filter .26s ease, transform .26s ease;
+  will-change: opacity, filter, transform;
+}
+
+body.lang-anim.lang-out [data-i18n],
+body.lang-anim.lang-out .btn:has([data-i18n]) {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(8px);
+}
+
+/* Le bouton porte le fade comme un bloc : on neutralise le label interne
+   pour éviter un double flou/décalage. */
+body.lang-anim .btn [data-i18n] {
+  transition: none;
+}
+
+body.lang-anim.lang-out .btn [data-i18n] {
+  filter: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.lang-anim [data-i18n],
+  body.lang-anim .btn:has([data-i18n]) {
+    transition: none;
+  }
+
+  body.lang-anim.lang-out [data-i18n],
+  body.lang-anim.lang-out .btn:has([data-i18n]) {
+    filter: none;
+    transform: none;
+  }
 }
 
 /* ---------- PAGE LOADER ---------- */
