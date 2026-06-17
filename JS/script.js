@@ -70,7 +70,7 @@
       'legal.liability.title': 'Responsabilité',
       'legal.liability.text': "DJ Skylight met tout en œuvre pour assurer l'exactitude et la mise à jour des informations diffusées sur ce site. Toutefois, il ne peut garantir l'exhaustivité ou l'absence d'erreurs des contenus mis à disposition. L'utilisation du site se fait sous la seule responsabilité de l'utilisateur. DJ Skylight ne saurait être tenu responsable des dommages directs ou indirects résultant de l'accès ou de l'utilisation du site.",
       'legal.credits.title': 'Crédits',
-      'legal.credits.text': "Conception, design et développement : DJ Skylight.<br>Typographies : Adobe Fonts (Typekit) et Poppins (Google Fonts).<br>Icônes : Boxicons (boxicons.com).<br>Photographies et visuels : <a href='https://www.instagram.com/vthvnvse/' target='_blank' rel='noopener'>@vthvnvse</a>",
+      'legal.credits.text': "Conception, design et développement : DJ Skylight.<br>Typographies : Adobe Fonts (Typekit) et Poppins (Google Fonts).<br>Icônes : Boxicons (boxicons.com).<br>Photographies : <a href='https://www.instagram.com/vthvnvse/' target='_blank' rel='noopener'>@vthvnvse</a>",
       'legal.back': "Retour à l'accueil"
     },
     en: {
@@ -136,7 +136,7 @@
       'legal.liability.title': 'Liability',
       'legal.liability.text': 'DJ Skylight makes every effort to ensure the accuracy and currency of the information published on this site. However, completeness and absence of errors cannot be guaranteed. Use of the site is at the user’s sole risk. DJ Skylight cannot be held responsible for any direct or indirect damages resulting from access to or use of the site.',
       'legal.credits.title': 'Credits',
-      'legal.credits.text': "Design and development: DJ Skylight.<br>Typography: Adobe Fonts (Typekit) and Poppins (Google Fonts).<br>Icons: Boxicons (boxicons.com).<br>Photography and visuals: <a href='https://www.instagram.com/vthvnvse/' target='_blank' rel='noopener'>@vthvnvse</a>",
+      'legal.credits.text': "Design and development: DJ Skylight.<br>Typography: Adobe Fonts (Typekit) and Poppins (Google Fonts).<br>Icons: Boxicons (boxicons.com).<br>Photography: <a href='https://www.instagram.com/vthvnvse/' target='_blank' rel='noopener'>@vthvnvse</a>",
       'legal.back': 'Back to home'
     }
   };
