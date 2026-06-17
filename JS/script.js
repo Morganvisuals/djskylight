@@ -13,12 +13,15 @@
       'nav.materiel': 'Matériel',
       'nav.bio': 'Bio',
       'nav.photos': 'Photos',
-      'nav.contact': 'Contact',
+      'nav.contact': 'Réserver',
       'nav.presskit': 'Mon press-kit',
       'hero.title': 'DJ & compositeur <span class="display red">Caribéen.</span>',
       'hero.tag': 'DJ Antillais — sets explosifs, énergie brute et son unique des Antilles.',
-      'hero.cta.contact': 'Contactez-moi',
+      'hero.cta.contact': 'Envoyer ma demande',
       'hero.cta.mixs': 'Écouter les mixs',
+      'booking.avail': 'Disponible en Martinique & Guadeloupe',
+      'booking.types': 'Clubs, soirées privées, events, festivals',
+      'booking.cta': 'Envoyer ma demande',
       'musique.title': 'Dernière sortie',
       'musique.sub': 'Ma dernière sortie musicale.',
       'musique.cta': 'Voir le clip',
@@ -37,7 +40,7 @@
       'bio.text': "DJ Skylight est un DJ caribéen de 21 ans, originaire de Martinique. Il découvre le mix à seulement 17 ans, en 2023, et en quelques années à peine, il a su développer un style unique qui attire de plus en plus d'attention dans la scène musicale caribéenne. Dès ses premiers sets, il impressionne par son énergie et sa créativité.",
       'photos.title': 'Photos.',
       'photos.sub': 'Quelques instants capturés en soirée.',
-      'contact.title': 'Contactez-moi',
+      'contact.title': 'Réservez <span class="sig">votre date</span>',
       'contact.sub': 'Booking, collaborations ou questions ? N\'hésitez pas à m\'écrire.',
       'contact.book': 'BOOKEZ VOTRE DATE <span class="display red">Sans plus attendre.</span>',
       'form.nom': 'Nom...',
@@ -55,7 +58,7 @@
       'legal.editor.title': 'Éditeur du site',
       'legal.editor.text': 'Le présent site est édité par DJ Skylight, artiste indépendant.<br>Contact : djskylightfwi@gmail.com — +596 696 30 12 76<br>Localisation : Martinique, Guadeloupe.',
       'legal.host.title': 'Hébergement',
-      'legal.host.text': "Le site est hébergé par o2switch, Chemin des Pardiaux, 63000 Clermont-Ferrand, France.",
+      'legal.host.text': "Le site est hébergé par o2switch, SAS immatriculée au RCS de Clermont-Ferrand.<br>Siège social : Chemin des Pardiaux, 63000 Clermont-Ferrand, France.<br>Téléphone : 04 44 44 60 40<br>Site web : <a href='https://www.o2switch.fr' target='_blank' rel='noopener'>https://www.o2switch.fr</a>",
       'legal.ip.title': 'Propriété intellectuelle',
       'legal.ip.text': "L'ensemble des contenus (textes, visuels, musiques, mixs, logo et identité visuelle) présents sur ce site sont la propriété exclusive de DJ Skylight, sauf mention contraire. Toute reproduction, diffusion ou exploitation, totale ou partielle, sans autorisation écrite préalable est interdite.",
       'legal.data.title': 'Données personnelles',
@@ -67,7 +70,7 @@
       'legal.liability.title': 'Responsabilité',
       'legal.liability.text': "DJ Skylight met tout en œuvre pour assurer l'exactitude et la mise à jour des informations diffusées sur ce site. Toutefois, il ne peut garantir l'exhaustivité ou l'absence d'erreurs des contenus mis à disposition. L'utilisation du site se fait sous la seule responsabilité de l'utilisateur. DJ Skylight ne saurait être tenu responsable des dommages directs ou indirects résultant de l'accès ou de l'utilisation du site.",
       'legal.credits.title': 'Crédits',
-      'legal.credits.text': 'Conception, design et développement : DJ Skylight.<br>Typographies : Adobe Fonts (Typekit) et Poppins (Google Fonts).<br>Icônes : Boxicons (boxicons.com).<br>Photographies et visuels : DJ Skylight, sauf mention contraire.',
+      'legal.credits.text': "Conception, design et développement : DJ Skylight.<br>Typographies : Adobe Fonts (Typekit) et Poppins (Google Fonts).<br>Icônes : Boxicons (boxicons.com).<br>Photographies et visuels : <a href='https://www.instagram.com/vthvnvse/' target='_blank' rel='noopener'>@vthvnvse</a>",
       'legal.back': "Retour à l'accueil"
     },
     en: {
@@ -76,12 +79,15 @@
       'nav.materiel': 'Setup',
       'nav.bio': 'Bio',
       'nav.photos': 'Photos',
-      'nav.contact': 'Contact',
+      'nav.contact': 'Book',
       'nav.presskit': 'My press kit',
       'hero.title': 'DJ &amp; producer from the <span class="display red">Caribbean</span>',
       'hero.tag': 'Caribbean DJ — explosive sets, raw energy and the unique sound of the West Indies.',
-      'hero.cta.contact': 'Contact me',
+      'hero.cta.contact': 'Book a date',
       'hero.cta.mixs': 'Listen to the mixes',
+      'booking.avail': 'Available in Martinique & Guadeloupe',
+      'booking.types': 'Clubs, private parties, events, festivals',
+      'booking.cta': 'Book a date',
       'musique.title': 'Latest release',
       'musique.sub': 'My latest musical release.',
       'musique.cta': 'Watch the clip',
@@ -100,7 +106,7 @@
       'bio.text': 'DJ Skylight is a 21-year-old Caribbean DJ from Martinique. He discovered DJing at just 17, back in 2023, and in only a few years, he has carved out a unique style that is drawing more and more attention in the Caribbean music scene. From his very first sets, he impresses with his energy and creativity.',
       'photos.title': 'Photos.',
       'photos.sub': 'A few moments captured at parties.',
-      'contact.title': 'Contact me',
+      'contact.title': 'Book <span class="sig">your date</span>',
       'contact.sub': 'Booking, collaborations or questions? Feel free to reach out.',
       'contact.book': 'BOOK YOUR DATE <span class="display red">Without further delay.</span>',
       'form.nom': 'Last name...',
@@ -118,7 +124,7 @@
       'legal.editor.title': 'Site editor',
       'legal.editor.text': 'This site is published by DJ Skylight, independent artist.<br>Contact: djskylightfwi@gmail.com — +596 696 30 12 76<br>Location: Martinique, Guadeloupe.',
       'legal.host.title': 'Hosting',
-      'legal.host.text': "The site is hosted by o2switch, Chemin des Pardiaux, 63000 Clermont-Ferrand, France.",
+      'legal.host.text': "The site is hosted by o2switch, SAS registered with the Clermont-Ferrand Trade and Companies Register.<br>Registered office: Chemin des Pardiaux, 63000 Clermont-Ferrand, France.<br>Phone: 04 44 44 60 40<br>Website: <a href='https://www.o2switch.fr' target='_blank' rel='noopener'>https://www.o2switch.fr</a>",
       'legal.ip.title': 'Intellectual property',
       'legal.ip.text': 'All content (text, visuals, music, mixes, logo and visual identity) on this site is the exclusive property of DJ Skylight, unless otherwise stated. Any reproduction, distribution or exploitation, in whole or in part, without prior written authorization is prohibited.',
       'legal.data.title': 'Personal data',
@@ -130,7 +136,7 @@
       'legal.liability.title': 'Liability',
       'legal.liability.text': 'DJ Skylight makes every effort to ensure the accuracy and currency of the information published on this site. However, completeness and absence of errors cannot be guaranteed. Use of the site is at the user’s sole risk. DJ Skylight cannot be held responsible for any direct or indirect damages resulting from access to or use of the site.',
       'legal.credits.title': 'Credits',
-      'legal.credits.text': 'Design and development: DJ Skylight.<br>Typography: Adobe Fonts (Typekit) and Poppins (Google Fonts).<br>Icons: Boxicons (boxicons.com).<br>Photography and visuals: DJ Skylight, unless otherwise stated.',
+      'legal.credits.text': "Design and development: DJ Skylight.<br>Typography: Adobe Fonts (Typekit) and Poppins (Google Fonts).<br>Icons: Boxicons (boxicons.com).<br>Photography and visuals: <a href='https://www.instagram.com/vthvnvse/' target='_blank' rel='noopener'>@vthvnvse</a>",
       'legal.back': 'Back to home'
     }
   };
@@ -410,62 +416,6 @@
       } finally {
         if (sendBtn) { sendBtn.disabled = false; sendBtn.innerHTML = sendLabel; }
       }
-    });
-  }
-
-  /* ---------- Magnetic hover — .glass.book card ---------- */
-  const bookCard = document.querySelector('.glass.book');
-  if (bookCard && window.matchMedia('(pointer:fine)').matches) {
-    const MAX_X = 12;
-    const MAX_Y = 8;
-    const STIFFNESS = 0.08;
-    const DAMPING = 0.82;
-
-    let targetX = 0, targetY = 0;
-    let currentX = 0, currentY = 0;
-    let velX = 0, velY = 0;
-    let raf = null;
-    let hovering = false;
-
-    const tick = () => {
-      const dx = targetX - currentX;
-      const dy = targetY - currentY;
-      velX = (velX + dx * STIFFNESS) * DAMPING;
-      velY = (velY + dy * STIFFNESS) * DAMPING;
-      currentX += velX;
-      currentY += velY;
-
-      bookCard.style.transform =
-        `translate3d(${currentX.toFixed(2)}px,${currentY.toFixed(2)}px,0)`;
-
-      if (hovering || Math.abs(velX) + Math.abs(velY) > 0.01 ||
-        Math.abs(dx) + Math.abs(dy) > 0.01) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        bookCard.style.transform = '';
-        raf = null;
-      }
-    };
-
-    const start = () => { if (!raf) raf = requestAnimationFrame(tick); };
-
-    bookCard.addEventListener('mousemove', (e) => {
-      const r = bookCard.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const px = (e.clientX - cx) / (r.width / 2);
-      const py = (e.clientY - cy) / (r.height / 2);
-      targetX = px * MAX_X;
-      targetY = py * MAX_Y;
-      hovering = true;
-      start();
-    });
-
-    bookCard.addEventListener('mouseleave', () => {
-      hovering = false;
-      targetX = 0;
-      targetY = 0;
-      start();
     });
   }
 
