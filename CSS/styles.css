@@ -1644,6 +1644,14 @@ footer a.legal-link:hover {
   text-decoration-color: var(--red);
 }
 
+.legal-updated {
+  color: var(--muted);
+  font-size: .85rem;
+  font-style: italic;
+  margin-top: 30px;
+  opacity: .8;
+}
+
 .back-home {
   margin-top: 40px;
   display: inline-flex;
