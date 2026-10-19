@@ -15,7 +15,7 @@
     <!-- Display font (Adobe Fonts) -->
     <link rel="stylesheet" href="https://use.typekit.net/oej1ysz.css">
     <!-- Styles -->
-    <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/styles.css?v=20261019">
 </head>
 
 <body class="loading">
@@ -364,7 +364,7 @@
                     <textarea name="message" placeholder="Message..." data-i18n-placeholder="form.message"
                         maxlength="5000" required></textarea>
                     <!-- Honeypot anti-bot : invisible pour les humains, rempli par les robots -->
-                    <div class="hp-field" aria-hidden="true">
+                    <div class="hp-field" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
                         <label>Ne pas remplir <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label>
                     </div>
                     <button class="btn" type="submit" data-i18n="form.send">
@@ -437,7 +437,7 @@
         </button>
     </div>
 
-    <script src="JS/script.js"></script>
+    <script src="JS/script.js?v=20261019"></script>
 </body>
 
 </html>
