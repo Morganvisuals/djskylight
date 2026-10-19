@@ -58,7 +58,7 @@
       'legal.title': 'Mentions Légales',
       'legal.sub': 'Informations légales du site DJ Skylight.',
       'legal.editor.title': 'Éditeur du site',
-      'legal.editor.text': 'Le présent site est édité par DJ Skylight, artiste indépendant.<br>Contact : djskylightfwi@gmail.com — +596 696 30 12 76<br>Localisation : Martinique, Guadeloupe.',
+      'legal.editor.text': 'Le présent site est édité par DJ Skylight, artiste indépendant.<br>Contact : djskylightfwi@gmail.com<br>Localisation : Martinique, Guadeloupe.',
       'legal.host.title': 'Hébergement',
       'legal.host.text': "Le site est hébergé par o2switch, SAS immatriculée au RCS de Clermont-Ferrand.<br>Siège social : Chemin des Pardiaux, 63000 Clermont-Ferrand, France.<br>Téléphone : 04 44 44 60 40<br>Site web : <a href='https://www.o2switch.fr' target='_blank' rel='noopener'>https://www.o2switch.fr</a>",
       'legal.ip.title': 'Propriété intellectuelle',
@@ -150,7 +150,7 @@
       'legal.title': 'Legal Notices',
       'legal.sub': 'Legal information for the DJ Skylight website.',
       'legal.editor.title': 'Site editor',
-      'legal.editor.text': 'This site is published by DJ Skylight, independent artist.<br>Contact: djskylightfwi@gmail.com — +596 696 30 12 76<br>Location: Martinique, Guadeloupe.',
+      'legal.editor.text': 'This site is published by DJ Skylight, independent artist.<br>Contact: djskylightfwi@gmail.com<br>Location: Martinique, Guadeloupe.',
       'legal.host.title': 'Hosting',
       'legal.host.text': "The site is hosted by o2switch, SAS registered with the Clermont-Ferrand Trade and Companies Register.<br>Registered office: Chemin des Pardiaux, 63000 Clermont-Ferrand, France.<br>Phone: 04 44 44 60 40<br>Website: <a href='https://www.o2switch.fr' target='_blank' rel='noopener'>https://www.o2switch.fr</a>",
       'legal.ip.title': 'Intellectual property',
@@ -495,13 +495,13 @@
       status.classList.remove('is-open');
     };
 
-    const showStatus = (key, kind, autoHide = true) => {
+    const showStatus = (key, kind) => {
       if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
       status.textContent = t(key);
       status.classList.remove('form-status--ok', 'form-status--err');
       status.classList.add(kind, 'is-open');
-      // Errors stay until the next submit; only success auto-dismisses
-      if (autoHide) hideTimer = setTimeout(collapseStatus, AUTO_HIDE_MS);
+      // Success and error messages both auto-dismiss
+      hideTimer = setTimeout(collapseStatus, AUTO_HIDE_MS);
     };
 
     // Anti-bot: signed timestamp token, requested when the visitor starts filling the form.
@@ -533,7 +533,7 @@
       }
 
       if (inCooldown()) {
-        showStatus('form.ratelimit', 'form-status--err', false);
+        showStatus('form.ratelimit', 'form-status--err');
         return;
       }
 
@@ -556,14 +556,14 @@
           try { localStorage.setItem(COOLDOWN_KEY, String(Date.now())); } catch (_) { }
           showStatus('form.success', 'form-status--ok');
         } else if (res.status === 429) {
-          showStatus('form.ratelimit', 'form-status--err', false);
+          showStatus('form.ratelimit', 'form-status--err');
         } else {
           // 400 = token expired/too fast: fetch a fresh one for the next attempt
           if (res.status === 400) tokenPromise = null;
-          showStatus('form.error', 'form-status--err', false);
+          showStatus('form.error', 'form-status--err');
         }
       } catch (_) {
-        showStatus('form.error', 'form-status--err', false);
+        showStatus('form.error', 'form-status--err');
       } finally {
         if (sendBtn) { sendBtn.disabled = false; sendBtn.innerHTML = sendLabel; }
       }
