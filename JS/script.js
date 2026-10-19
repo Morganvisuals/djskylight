@@ -51,6 +51,7 @@
       'form.sending': 'Envoi…',
       'form.success': 'Merci ! Votre message a bien été envoyé.',
       'form.error': 'Une erreur est survenue. Réessayez ou écrivez à djskylightfwi@gmail.com.',
+      'form.ratelimit': 'Vous avez déjà envoyé un message récemment. Merci de patienter avant de réessayer.',
       'footer.rights': 'Tous droits réservés',
       'footer.legal': 'Mentions Légales',
       'footer.cgu': 'CGU',
@@ -142,6 +143,7 @@
       'form.sending': 'Sending…',
       'form.success': 'Thank you! Your message has been sent.',
       'form.error': 'Something went wrong. Please try again or email djskylightfwi@gmail.com.',
+      'form.ratelimit': 'You already sent a message recently. Please wait before trying again.',
       'footer.rights': 'All rights reserved',
       'footer.legal': 'Legal Notices',
       'footer.cgu': 'Terms of Use',
@@ -466,7 +468,7 @@
     }, { threshold: 0.5 }).observe(musique);
   }
 
-  /* ---------- Contact form → Formspree (AJAX) ---------- */
+  /* ---------- Contact form → contact.php (AJAX) ---------- */
   const form = document.getElementById('contact-form');
   if (form) {
     const sendBtn = form.querySelector('button[type="submit"]');
@@ -502,6 +504,26 @@
       if (autoHide) hideTimer = setTimeout(collapseStatus, AUTO_HIDE_MS);
     };
 
+    // Anti-bot: signed timestamp token, requested when the visitor starts filling the form.
+    // contact.php rejects submissions without it or sent less than 3s after it was issued.
+    let tokenPromise = null;
+    const getToken = () => {
+      tokenPromise ??= fetch(`${form.action}?token=1`, { headers: { Accept: 'application/json' } })
+        .then((r) => r.json())
+        .then((d) => d.token || '')
+        .catch(() => { tokenPromise = null; return ''; });
+      return tokenPromise;
+    };
+    form.addEventListener('focusin', getToken, { once: true });
+
+    // Client-side cooldown (the real limit is enforced server-side)
+    const COOLDOWN_MS = 60 * 1000;
+    const COOLDOWN_KEY = 'contactLastSent';
+    const inCooldown = () => {
+      try { return Date.now() - Number(localStorage.getItem(COOLDOWN_KEY) || 0) < COOLDOWN_MS; }
+      catch (_) { return false; }
+    };
+
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
 
@@ -510,21 +532,34 @@
         return;
       }
 
+      if (inCooldown()) {
+        showStatus('form.ratelimit', 'form-status--err', false);
+        return;
+      }
+
       // Sending state — collapse any previous message smoothly
       collapseStatus();
       if (sendBtn) { sendBtn.disabled = true; sendBtn.innerHTML = t('form.sending'); }
 
       try {
+        const data = new FormData(form);
+        data.set('_token', await getToken());
+
         const res = await fetch(form.action, {
           method: 'POST',
-          body: new FormData(form),
+          body: data,
           headers: { Accept: 'application/json' }
         });
 
         if (res.ok) {
           form.reset();
+          try { localStorage.setItem(COOLDOWN_KEY, String(Date.now())); } catch (_) { }
           showStatus('form.success', 'form-status--ok');
+        } else if (res.status === 429) {
+          showStatus('form.ratelimit', 'form-status--err', false);
         } else {
+          // 400 = token expired/too fast: fetch a fresh one for the next attempt
+          if (res.status === 400) tokenPromise = null;
           showStatus('form.error', 'form-status--err', false);
         }
       } catch (_) {

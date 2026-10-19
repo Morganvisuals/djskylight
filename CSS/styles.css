@@ -1557,6 +1557,15 @@ form .btn:disabled {
   color: #ff6b54;
 }
 
+/* Honeypot anti-bot: off-screen (not display:none, which some bots detect) */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* ---------- FOOTER ---------- */
 footer {
   /* Side padding (matches .container's 5vw) so the copyright line never

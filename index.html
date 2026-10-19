@@ -355,14 +355,18 @@
                 <form id="contact-form" class="glass reveal delay2" novalidate action="contact.php" method="POST">
                     <div class="f-row">
                         <input name="nom" placeholder="Nom..." data-i18n-placeholder="form.nom" required
-                            autocomplete="family-name">
+                            maxlength="100" autocomplete="family-name">
                         <input name="prenom" placeholder="Prénom..." data-i18n-placeholder="form.prenom" required
-                            autocomplete="given-name">
+                            maxlength="100" autocomplete="given-name">
                     </div>
                     <input name="email" type="email" placeholder="Email..." data-i18n-placeholder="form.email" required
-                        autocomplete="email">
+                        maxlength="254" autocomplete="email">
                     <textarea name="message" placeholder="Message..." data-i18n-placeholder="form.message"
-                        required></textarea>
+                        maxlength="5000" required></textarea>
+                    <!-- Honeypot anti-bot : invisible pour les humains, rempli par les robots -->
+                    <div class="hp-field" aria-hidden="true">
+                        <label>Ne pas remplir <input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label>
+                    </div>
                     <button class="btn" type="submit" data-i18n="form.send">
                         Envoyer
                     </button>
