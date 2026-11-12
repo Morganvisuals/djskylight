@@ -52,6 +52,9 @@
       'form.success': 'Merci ! Votre message a bien été envoyé.',
       'form.error': 'Une erreur est survenue. Réessayez ou écrivez à djskylightfwi@gmail.com.',
       'form.ratelimit': 'Vous avez déjà envoyé un message récemment. Merci de patienter avant de réessayer.',
+      'form.invalid': 'Merci de vérifier les champs en rouge (nom, adresse e-mail valide, message d\'au moins 10 caractères).',
+      'form.blocked': 'Votre message n\'a pas pu être envoyé : il ressemble à un spam. Retirez les liens ou écrivez directement à djskylightfwi@gmail.com.',
+      'form.captcha': 'La vérification anti-robot n\'a pas abouti. Réessayez dans un instant (désactivez votre bloqueur de publicités si besoin) ou écrivez à djskylightfwi@gmail.com.',
       'footer.rights': 'Tous droits réservés',
       'footer.legal': 'Mentions Légales',
       'footer.cgu': 'CGU',
@@ -144,6 +147,9 @@
       'form.success': 'Thank you! Your message has been sent.',
       'form.error': 'Something went wrong. Please try again or email djskylightfwi@gmail.com.',
       'form.ratelimit': 'You already sent a message recently. Please wait before trying again.',
+      'form.invalid': 'Please check the fields in red (name, valid email address, message of at least 10 characters).',
+      'form.blocked': 'Your message could not be sent: it looks like spam. Remove any links or email djskylightfwi@gmail.com directly.',
+      'form.captcha': 'The anti-bot check did not complete. Please try again in a moment (disable your ad blocker if needed) or email djskylightfwi@gmail.com.',
       'footer.rights': 'All rights reserved',
       'footer.legal': 'Legal Notices',
       'footer.cgu': 'Terms of Use',
@@ -504,17 +510,76 @@
       hideTimer = setTimeout(collapseStatus, AUTO_HIDE_MS);
     };
 
+    // Cloudflare Turnstile — rendered invisibly ("interaction-only"): the box only appears
+    // when Cloudflare needs the visitor to click. The server verifies every token.
+    const tsBox = document.createElement('div');
+    tsBox.className = 'ts-box';
+    form.insertBefore(tsBox, sendBtn);
+    let tsWidget = null;
+    let tsToken = '';
+    let tsWaiters = [];
+    let tsFailed = false;
+    const tsResolve = (val) => { tsWaiters.forEach((fn) => fn(val)); tsWaiters = []; };
+
+    const loadTurnstile = (siteKey) => {
+      if (!siteKey || document.getElementById('cf-turnstile-api')) return;
+      const s = document.createElement('script');
+      s.id = 'cf-turnstile-api';
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      s.onerror = () => { tsFailed = true; tsResolve(''); };
+      s.onload = () => {
+        tsWidget = window.turnstile.render(tsBox, {
+          sitekey: siteKey,
+          action: 'contact',
+          theme: 'dark',
+          size: 'flexible',
+          appearance: 'interaction-only',
+          language: document.documentElement.lang || 'fr',
+          callback: (tok) => { tsToken = tok; tsFailed = false; tsResolve(tok); },
+          'expired-callback': () => { tsToken = ''; },
+          'error-callback': () => { tsToken = ''; tsFailed = true; tsResolve(''); return true; },
+          'before-interactive-callback': () => tsBox.classList.add('is-visible'),
+          'after-interactive-callback': () => tsBox.classList.remove('is-visible')
+        });
+      };
+      document.head.appendChild(s);
+    };
+
+    // Waits (max 20 s) for a Turnstile token. null = Turnstile not configured, '' = unavailable
+    const getTurnstileToken = () => {
+      if (!document.getElementById('cf-turnstile-api')) return Promise.resolve(null);
+      if (tsToken) return Promise.resolve(tsToken);
+      if (tsFailed) return Promise.resolve('');
+      return new Promise((resolve) => {
+        tsWaiters.push(resolve);
+        setTimeout(() => resolve(tsToken), 20000);
+      });
+    };
+
+    const resetTurnstile = () => {
+      tsToken = '';
+      tsFailed = false;
+      if (tsWidget !== null && window.turnstile) window.turnstile.reset(tsWidget);
+    };
+
     // Anti-bot: signed timestamp token, requested when the visitor starts filling the form.
     // contact.php rejects submissions without it or sent less than 3s after it was issued.
+    // The same request returns the public Turnstile site key (kept in the private server config).
     let tokenPromise = null;
     const getToken = () => {
       tokenPromise ??= fetch(`${form.action}?token=1`, { headers: { Accept: 'application/json' } })
         .then((r) => r.json())
-        .then((d) => d.token || '')
+        .then((d) => { loadTurnstile(d.turnstile); return d.token || ''; })
         .catch(() => { tokenPromise = null; return ''; });
       return tokenPromise;
     };
     form.addEventListener('focusin', getToken, { once: true });
+
+    // Invalid fields reported by the server get a red border until edited
+    const markInvalid = (names) => {
+      (names || []).forEach((n) => form.elements[n]?.setAttribute('aria-invalid', 'true'));
+    };
+    form.addEventListener('input', (e) => e.target.removeAttribute?.('aria-invalid'));
 
     // Client-side cooldown (the real limit is enforced server-side)
     const COOLDOWN_MS = 60 * 1000;
@@ -545,11 +610,21 @@
         const data = new FormData(form);
         data.set('_token', await getToken());
 
+        const captcha = await getTurnstileToken();
+        if (captcha === '') {
+          showStatus('form.captcha', 'form-status--err');
+          resetTurnstile();
+          return;
+        }
+        if (captcha) data.set('cf-turnstile-response', captcha);
+
         const res = await fetch(form.action, {
           method: 'POST',
           body: data,
           headers: { Accept: 'application/json' }
         });
+        const body = await res.json().catch(() => ({}));
+        resetTurnstile(); // Turnstile tokens are single-use
 
         if (res.ok) {
           form.reset();
@@ -557,6 +632,13 @@
           showStatus('form.success', 'form-status--ok');
         } else if (res.status === 429) {
           showStatus('form.ratelimit', 'form-status--err');
+        } else if (body.reason === 'content') {
+          showStatus('form.blocked', 'form-status--err');
+        } else if (body.reason === 'captcha') {
+          showStatus('form.captcha', 'form-status--err');
+        } else if (res.status === 422 && body.fields) {
+          markInvalid(body.fields);
+          showStatus('form.invalid', 'form-status--err');
         } else {
           // 400 = token expired/too fast: fetch a fresh one for the next attempt
           if (res.status === 400) tokenPromise = null;

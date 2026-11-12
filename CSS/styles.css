@@ -1557,6 +1557,26 @@ form .btn:disabled {
   color: #ff6b54;
 }
 
+/* Field flagged invalid by the server (cleared as soon as the visitor edits it) */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--red);
+}
+
+/* Cloudflare Turnstile: zero footprint while invisible (cancels the form gap),
+   shown only when Cloudflare asks the visitor to click */
+.ts-box {
+  margin-top: -18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .4s ease, margin-top .4s ease;
+}
+
+.ts-box.is-visible {
+  margin-top: 0;
+  max-height: 140px;
+}
+
 /* Honeypot anti-bot: off-screen (not display:none, which some bots detect) */
 .hp-field {
   position: absolute;
